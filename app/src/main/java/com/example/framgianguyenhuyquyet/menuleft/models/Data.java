@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by FRAMGIA\nguyen.huy.quyet on 15/03/2016.
  */
 public class Data implements Serializable {
+    private String id;
     private String title;
     private String description;
     private String link;
@@ -14,6 +15,14 @@ public class Data implements Serializable {
     private String category;
     private String author;
     private String enclosure;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAuthor() {
         return author;

@@ -49,7 +49,7 @@ public class FragmentListPost extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 itemSelect = dataArrayList.get(position);
-                Fragment fr = new FragmentDetailPost();
+                Fragment fr = new FragmentDetailPost(itemSelect);
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment, fr);

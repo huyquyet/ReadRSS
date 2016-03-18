@@ -3,6 +3,7 @@ package com.example.framgianguyenhuyquyet.menuleft.controller;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.framgianguyenhuyquyet.menuleft.models.Data;
@@ -18,7 +19,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by FRAMGIA\nguyen.huy.quyet on 15/03/2016.
@@ -103,6 +108,7 @@ public class ReadRssAsyncTask extends AsyncTask<Void, ArrayList<Data>, ArrayList
     public void parseXMLAndStoreIt(XmlPullParser myParser) {
         int event;
         String text = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         try {
             event = myParser.getEventType();
             boolean insideItem = false;
@@ -129,7 +135,8 @@ public class ReadRssAsyncTask extends AsyncTask<Void, ArrayList<Data>, ArrayList
                             } else if (name.equals("guid")) {
                                 item.setGuid(text);
                             } else if (name.equals("pubDate")) {
-                                item.setPubDate(text);
+                                Date date = formatDate(text);
+                                item.setPubDate(dateFormat.format(date));
                             } else if (name.equals("category")) {
                                 item.setCategory(text);
                             } else if (name.equals("author")) {
@@ -153,9 +160,10 @@ public class ReadRssAsyncTask extends AsyncTask<Void, ArrayList<Data>, ArrayList
                                 informations.setLanguage(text);
                             else if (name.equals("copyright"))
                                 informations.setCopyright(text);
-                            else if (name.equals("lastBuildDate"))
-                                informations.setLastBuildDate(text);
-                            else if (name.equals("generator"))
+                            else if (name.equals("lastBuildDate")) {
+                                Date date = formatDate(text);
+                                informations.setLastBuildDate(dateFormat.format(date));
+                            } else if (name.equals("generator"))
                                 informations.setGenerator(text);
                             else if (name.equals("atom:link"))
                                 informations.setAtom(myParser.getAttributeValue(0));
@@ -170,6 +178,9 @@ public class ReadRssAsyncTask extends AsyncTask<Void, ArrayList<Data>, ArrayList
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ParseException e) {
+            Log.d("Loi", e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -179,5 +190,12 @@ public class ReadRssAsyncTask extends AsyncTask<Void, ArrayList<Data>, ArrayList
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public Date formatDate(String data) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+        Date date = dateFormat.parse(data);
+        System.out.println(date);
+        return date;
     }
 }
